@@ -1,0 +1,32 @@
+Driver code for the peripharal lis3mdl is available at below github repository,
+https://github.com/STMicroelectronics/STMems_Standard_C_drivers/tree/master
+
+Download the driver code with below command,
+git clone --recursive https://github.com/STMicroelectronics/STMems_Standard_C_drivers
+
+To integrate the driver code to project do the below steps,
+Define in the code the read and write functions that use the I²C like the following:
+    int32_t platform_write(void *handle, uint8_t Reg, const uint8_t *Bufp, uint16_t len)
+    int32_t platform_read(void *handle, uint8_t Reg, uint8_t *Bufp, uint16_t len)
+
+Declare and initialize the structure of the device interface:
+    xxxxxxx_ctx_t dev_ctx; /** xxxxxxx is the used part number **/
+    dev_ctx.write_reg = platform_write;
+    dev_ctx.read_reg = platform_read;
+
+If needed by the platform read and write functions, initialize the handle parameter:
+    dev_ctx.handle = &platform_handle;
+
+
+Please write a device driver that implements the following API:
+- Get the full-scale configuration          --> available at in the driver file lis3mdl_reg.c as lis3mdl_full_scale_get()
+- Get and set the output data rate          --> lis3mdl_data_rate_set(), lis3mdl_data_rate_get()
+- Enable or disable the interrupt pin       --> lis3mdl_int_config_set()
+- Read the output data of a specified axis  --> lis3mdl_mag_data_ready_get(),lis3mdl_int_source_get(),lis3mdl_read_reg(),
+                                                lis3mdl_mag_data_ready_get(),lis3mdl_magnetic_raw_get()
+
+
+Regarding the tasks given the functions are available to read the approate registers in the driver code already. 
+While integrating to specific platform the developer need to take care of the board configuration files and related functionality and  
+device tree node and initial configurations in linux.
+
